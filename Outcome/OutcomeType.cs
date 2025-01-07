@@ -3,5 +3,7 @@
 public enum OutcomeType
 {
     Success,
-    Failure
+    Failure,
+    NotFound,
+    Invalid,
 }
