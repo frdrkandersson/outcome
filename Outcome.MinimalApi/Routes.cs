@@ -32,6 +32,20 @@ public static class Routes
             .Produces(500);
     }
 
+    /// <summary>
+    /// The body will be validated automatically using endpointfilter and fluentvalidation
+    /// </summary>    
+    private static Task<IResult> Validate(ISender mediator, [FromBody] Dummy dummy) => Task.FromResult(Outcome.Success().ToResult());
+
+    /// <summary>
+    /// Because it returns Outcome<Dummy> this does not need ToResult() and the OutcomeEndpointFilter will do it automatically
+    /// </summary>
+    private static Task<Outcome<Dummy>> FullExample(ISender mediator, ExampleResult result) => mediator.Send(new FullExample(result));
+
+    /// <summary>
+    /// This one shows implicit convertion between dto and outcome<dto> (success)
+    /// </summary>    
+
     private static async Task<IResult> Ok(ISender mediator)
     {
         var outcome = await mediator.Send(new Ok());
@@ -49,12 +63,4 @@ public static class Routes
         var outcome = await mediator.Send(new Failure());
         return outcome.ToResult();
     }
-
-    private static async Task<IResult> Validate(ISender mediator, [FromBody] Dummy dummy)
-    {
-        var outcome = await mediator.Send(new Validate(dummy));
-        return outcome.ToResult();
-    }
-
-    private static Task<Outcome<Dummy>> FullExample(ISender mediator, ExampleResult result) => mediator.Send(new FullExample(result));
 }
